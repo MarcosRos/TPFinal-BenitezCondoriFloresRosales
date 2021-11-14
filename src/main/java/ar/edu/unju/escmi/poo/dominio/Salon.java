@@ -2,16 +2,22 @@ package ar.edu.unju.escmi.poo.dominio;
 
 import java.util.ArrayList;
 
-public class Sala {
-	
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="salones")
+public class Salon {
+	@Id
 	private int id;
 	private ArrayList <Mesa> mesas;
 	
-	public Sala() {
+	public Salon() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Sala(ArrayList<Mesa> mesas) {
+	public Salon(ArrayList<Mesa> mesas) {
 		super();
 		this.mesas = mesas;
 	}
@@ -31,7 +37,9 @@ public class Sala {
 
 	@Override
 	public String toString() {
-		return "Sala [mesas=" + mesas + "]";
+		return "Salon [id=" + id + ", mesas=" + mesas + "]";
 	}
+
+	
 	
 }

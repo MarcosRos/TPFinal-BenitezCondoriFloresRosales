@@ -1,7 +1,19 @@
 package ar.edu.unju.escmi.poo.dominio;
 
-public class Mesa {
+import java.io.Serializable;
 
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+public class Mesa implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
+	@ManyToOne
+	@JoinColumn(name="mesa_id")
 	private int id;
 	private String estado;
 	private int capacidad;
