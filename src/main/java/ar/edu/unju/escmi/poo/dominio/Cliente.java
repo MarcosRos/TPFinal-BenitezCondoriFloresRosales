@@ -13,8 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
 @Entity
-@Table (name =  "Cliente")
-@Inheritance (strategy=InheritanceType.TABLE_PER_CLASS )
+@Table (name = "Clientes")
+@Inheritance (strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class Cliente implements Serializable{
 
 	/**
