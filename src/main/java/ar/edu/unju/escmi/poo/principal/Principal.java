@@ -1,5 +1,7 @@
 package ar.edu.unju.escmi.poo.principal;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -240,7 +242,7 @@ public class Principal {
 			}
 				break;
 			case 5: {
-				System.out.println("a");
+				
 			}
 				break;
 			case 6: {
