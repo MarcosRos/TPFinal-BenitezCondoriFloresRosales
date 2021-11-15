@@ -1,5 +1,8 @@
 package ar.edu.unju.escmi.poo.dominio;
 
+import javax.persistence.Entity;
+
+@Entity
 public class ClienteParticular extends Cliente{
 
 	/**

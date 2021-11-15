@@ -29,7 +29,7 @@ public class MozoDaoImp implements IMozoDao{
 	public List<Mozo> obtenerMozos() {
 		// TODO Auto-generated method stub
 		@SuppressWarnings("unchecked")
-		List<Mozo> mozos = (List<Mozo>) manager.createQuery("SELECT e FROM Mozo e").getResultList();
+		List<Mozo> mozos = manager.createQuery("SELECT e FROM Mozo e").getResultList();
 		return mozos;
 	}
 
