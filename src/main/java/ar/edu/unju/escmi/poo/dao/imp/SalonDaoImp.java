@@ -36,8 +36,8 @@ public class SalonDaoImp implements ISalonDao{
 
 	public Salon obtenerSalon(int idSalon) {
 		// TODO Auto-generated method stub
-		Query query = manager.createQuery("SELECT e FROM ClienteAgencia e " + "WHERE e.id = :idSalon");
-		query.setParameter("id",idSalon );
+		Query query = manager.createQuery("SELECT e FROM Salon e " + "WHERE e.id = :idSalon");
+		query.setParameter("idSalon",idSalon );
 		Salon salon = (Salon)query.getSingleResult();
 		return salon;
 	}

@@ -43,7 +43,31 @@ public class Principal {
 		Mozo unMozo, mozoEncontrado;
 		Reserva unaReserva = null;
 		Salon unSalon;
-
+		
+		if(salonDao.obtenerSalones().size()==0) {
+			
+			ArrayList<Mesa> mesas1=new ArrayList<Mesa>();
+			ArrayList<Mesa> mesas2=new ArrayList<Mesa>();
+			Salon salon1= new Salon(mesas1);
+			Salon salon2= new Salon(mesas2);
+			salonDao.guardarSalon(salon1);
+			salonDao.guardarSalon(salon2);
+			for(int i=0; i<20;i++){
+				Mesa mesa1=new Mesa("Libre",4,salon1);
+				mesaDao.guardarMesa(mesa1);
+				mesas1.add(mesa1);
+			}
+			for(int i=0; i<10;i++) {
+				Mesa mesa2=new Mesa("Libre",4,salon2);
+				mesaDao.guardarMesa(mesa2);
+				mesas2.add(mesa2);
+			}
+			salon1.setMesas(mesas1);
+			salon2.setMesas(mesas2);
+			salonDao.modificarSalon(salon1);
+			salonDao.modificarSalon(salon2);
+			
+		}
 		do {
 			do {
 				bandera = true;
@@ -58,42 +82,56 @@ public class Principal {
 			} while (bandera == false);
 			switch (opc) {
 			case 1: {
-				do {
-					System.out.println("Ingrese el DNI del nuevo mozo");
-					try {
-						dni = sc.nextLong();
-					} catch (InputMismatchException ime) {
-						bandera = false;
-						System.out.println("Formato Incorrecto");
-						sc.next();
-					}
-					try {
-						mozoEncontrado = mozoDao.obtenerMozo(dni);
-					} catch (NoResultException nre) {
-						System.out.println("Dni Disponible");
-						mozoEncontrado = null;
-					}
-					if (mozoEncontrado != null) {
-						System.out.println("Ya existe un Usuario con ese DNI!");
-						bandera = false;
-					}
-				} while (bandera == false);
+				if(mozoDao.obtenerMozos().size()<6) {
+					do {
+						System.out.println("Ingrese el DNI del nuevo mozo");
+						do {
+							try {
+								dni = sc.nextLong();
+								bandera=true;
+							} catch (InputMismatchException ime) {
+								bandera = false;
+								System.out.println("Formato Incorrecto");
+								sc.next();
+							}
+						}while(bandera==false);
+						
+						try {
+							mozoEncontrado = mozoDao.obtenerMozo(dni);
+						} catch (NoResultException nre) {
+							bandera=true;
+							System.out.println("Dni Disponible");
+							mozoEncontrado = null;
+						}
+						if (mozoEncontrado != null) {
+							System.out.println("Ya existe un Usuario con ese DNI!");
+							bandera = false;
+						}
+					} while (bandera == false);
 
-				System.out.println("Ingrese el Nombre del nuevo mozo");
-				String nombre = sc.next();
+					System.out.println("Ingrese el Nombre del nuevo mozo");
+					String nombre = sc.next();
 
-				System.out.println("Ingrese el Apellido del nuevo mozo");
-				String apellido = sc.next();
+					System.out.println("Ingrese el Apellido del nuevo mozo");
+					String apellido = sc.next();
 
-				ArrayList<Reserva> reservasAtendidas = null;
-				unMozo = new Mozo(nombre, apellido, dni, reservasAtendidas);
-				mozoDao.guardarMozo(unMozo);
-
+					ArrayList<Reserva> reservasAtendidas = null;
+					unMozo = new Mozo(nombre, apellido, dni, reservasAtendidas);
+					mozoDao.guardarMozo(unMozo);
+				}
+				else {
+					System.out.println("Ya existen 6 mozos");
+				}
 			}
 				break;
 			case 2: {
-				System.out.println("=== Listado de Mozos ===");
-				mozoDao.obtenerMozos().stream().forEach(System.out::println);
+				if(mozoDao.obtenerMozos().size()==0){
+					System.out.println("Lista de mozos vacia");
+				}
+				else {
+					System.out.println("=== Listado de Mozos ===");
+					mozoDao.obtenerMozos().stream().forEach(System.out::println);
+				}
 			}
 				break;
 			case 3: {
@@ -101,6 +139,8 @@ public class Principal {
 				do {
 					do {
 						bandera = true;
+						libre=0;
+						ocupado=0;
 						System.out.println("Seleccione el salon del que quiere ver sus mesas:");
 						System.out.println("1- Salon 1");
 						System.out.println("2- Salon 2");
@@ -117,7 +157,7 @@ public class Principal {
 					switch (opcion) {
 					case 1:
 						System.out.println("===== Salon 1 =====");
-						unSalon = salonDao.obtenerSalon(opc);
+						unSalon = salonDao.obtenerSalon(1);
 						for (int i = 0; i < unSalon.getMesas().size(); i++) {
 							if (unSalon.getMesas().get(i).getEstado().equals("Libre")) {
 								libre++;
@@ -135,7 +175,7 @@ public class Principal {
 						break;
 					case 2:
 						System.out.println("===== Salon 2 =====");
-						unSalon = salonDao.obtenerSalon(opc);
+						unSalon = salonDao.obtenerSalon(2);
 
 						for (int i = 0; i < unSalon.getMesas().size(); i++) {
 							if (unSalon.getMesas().get(i).getEstado().equals("Libre")) {

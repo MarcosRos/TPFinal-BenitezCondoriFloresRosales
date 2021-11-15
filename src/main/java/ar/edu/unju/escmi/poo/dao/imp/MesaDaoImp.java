@@ -43,7 +43,7 @@ public class MesaDaoImp implements IMesaDao {
 
 	public Mesa obtenerMesa(int idMesa) {
 		// TODO Auto-generated method stub
-		Query query = manager.createQuery("SELECT e FROM Mozo e " + "WHERE e.id = :idMesa");
+		Query query = manager.createQuery("SELECT e FROM Mesa e " + "WHERE e.id = :idMesa");
 		query.setParameter("idMesa", idMesa);
 		Mesa mesa = (Mesa)query.getSingleResult();
 		return mesa;

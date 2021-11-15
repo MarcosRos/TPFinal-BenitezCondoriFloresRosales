@@ -3,7 +3,10 @@ package ar.edu.unju.escmi.poo.dominio;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -15,10 +18,16 @@ public class Mozo implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id",unique=true, nullable=false)
 	private int id;
+	@Column(name="nombre")
 	private String nombre;
+	@Column(name="apellido")
 	private String apellido;
+	@Column(name="dni")
 	private long dni;
+	@Column(name="reserva")
 	private ArrayList <Reserva> reservasAtendidas; 
 	
 	public Mozo() {
