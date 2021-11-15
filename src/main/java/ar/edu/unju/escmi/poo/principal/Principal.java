@@ -22,6 +22,8 @@ import ar.edu.unju.escmi.poo.dao.imp.MozoDaoImp;
 import ar.edu.unju.escmi.poo.dao.imp.ReservaDaoImp;
 import ar.edu.unju.escmi.poo.dao.imp.SalonDaoImp;
 import ar.edu.unju.escmi.poo.dominio.Cliente;
+import ar.edu.unju.escmi.poo.dominio.ClienteAgencia;
+import ar.edu.unju.escmi.poo.dominio.ClienteParticular;
 import ar.edu.unju.escmi.poo.dominio.Mesa;
 import ar.edu.unju.escmi.poo.dominio.Mozo;
 import ar.edu.unju.escmi.poo.dominio.Reserva;
@@ -40,27 +42,27 @@ public class Principal {
 		boolean bandera;
 		int opc = 0;
 		long dni = 0;
-		Cliente unCliente;
+		Cliente unCliente = null;
 		Mesa unaMesa;
 		Mozo unMozo, mozoEncontrado;
 		Reserva unaReserva = null;
 		Salon unSalon;
-		
-		if(salonDao.obtenerSalones().size()==0) {
-			
-			ArrayList<Mesa> mesas1=new ArrayList<Mesa>();
-			ArrayList<Mesa> mesas2=new ArrayList<Mesa>();
-			Salon salon1= new Salon(mesas1);
-			Salon salon2= new Salon(mesas2);
+
+		if (salonDao.obtenerSalones().size() == 0) {
+
+			ArrayList<Mesa> mesas1 = new ArrayList<Mesa>();
+			ArrayList<Mesa> mesas2 = new ArrayList<Mesa>();
+			Salon salon1 = new Salon(mesas1);
+			Salon salon2 = new Salon(mesas2);
 			salonDao.guardarSalon(salon1);
 			salonDao.guardarSalon(salon2);
-			for(int i=0; i<20;i++){
-				Mesa mesa1=new Mesa("Libre",4,salon1);
+			for (int i = 0; i < 20; i++) {
+				Mesa mesa1 = new Mesa("Libre", 4, salon1);
 				mesaDao.guardarMesa(mesa1);
 				mesas1.add(mesa1);
 			}
-			for(int i=0; i<10;i++) {
-				Mesa mesa2=new Mesa("Libre",4,salon2);
+			for (int i = 0; i < 10; i++) {
+				Mesa mesa2 = new Mesa("Libre", 4, salon2);
 				mesaDao.guardarMesa(mesa2);
 				mesas2.add(mesa2);
 			}
@@ -68,7 +70,7 @@ public class Principal {
 			salon2.setMesas(mesas2);
 			salonDao.modificarSalon(salon1);
 			salonDao.modificarSalon(salon2);
-			
+
 		}
 		do {
 			do {
@@ -84,24 +86,24 @@ public class Principal {
 			} while (bandera == false);
 			switch (opc) {
 			case 1: {
-				if(mozoDao.obtenerMozos().size()<6) {
+				if (mozoDao.obtenerMozos().size() < 6) {
 					do {
 						System.out.println("Ingrese el DNI del nuevo mozo");
 						do {
 							try {
 								dni = sc.nextLong();
-								bandera=true;
+								bandera = true;
 							} catch (InputMismatchException ime) {
 								bandera = false;
 								System.out.println("Formato Incorrecto");
 								sc.next();
 							}
-						}while(bandera==false);
-						
+						} while (bandera == false);
+
 						try {
 							mozoEncontrado = mozoDao.obtenerMozo(dni);
 						} catch (NoResultException nre) {
-							bandera=true;
+							bandera = true;
 							System.out.println("Dni Disponible");
 							mozoEncontrado = null;
 						}
@@ -120,17 +122,15 @@ public class Principal {
 					ArrayList<Reserva> reservasAtendidas = null;
 					unMozo = new Mozo(nombre, apellido, dni, reservasAtendidas);
 					mozoDao.guardarMozo(unMozo);
-				}
-				else {
+				} else {
 					System.out.println("Ya existen 6 mozos");
 				}
 			}
 				break;
 			case 2: {
-				if(mozoDao.obtenerMozos().size()==0){
+				if (mozoDao.obtenerMozos().size() == 0) {
 					System.out.println("Lista de mozos vacia");
-				}
-				else {
+				} else {
 					System.out.println("=== Listado de Mozos ===");
 					mozoDao.obtenerMozos().stream().forEach(System.out::println);
 				}
@@ -141,8 +141,8 @@ public class Principal {
 				do {
 					do {
 						bandera = true;
-						libre=0;
-						ocupado=0;
+						libre = 0;
+						ocupado = 0;
 						System.out.println("Seleccione el salon del que quiere ver sus mesas:");
 						System.out.println("1- Salon 1");
 						System.out.println("2- Salon 2");
@@ -242,7 +242,160 @@ public class Principal {
 			}
 				break;
 			case 5: {
+				boolean bandEncontrado = true;
+				int id = 0, comensales = 0;
+				do {
+					bandera = true;
+					System.out.println("Ingrese el DNI o CUIL del usuario");
+					try {
+						dni = sc.nextLong();
+					} catch (InputMismatchException ime) {
+						bandera = false;
+						System.out.println("Formato Incorrecto");
+						sc.next();
+					}
+				} while (bandera == false);
+				try {
+					unCliente = clienteDao.obtenerClienteParticular(dni);
+				} catch (NoResultException nre) {
+					try {
+						unCliente = clienteDao.obtenerClienteAgencia(dni);
+					} catch (NoResultException nrex) {
+						System.out.println("No se ha encontrado ningun usuario con dicho dni o cuil");
+						bandEncontrado = false;
+					}
+				}
+				if (bandEncontrado == false) {
+
+					System.out.println("Ingrese el nombre del cliente");
+					String nombre = sc.next();
+					System.out.println("Ingrese el email del cliente");
+					String email = sc.next();
+					System.out.println("Ingrese el telefono del cliente");
+					long telefono = sc.nextLong();
+
+					boolean tipoElegido = false;
+					int opcion = 0;
+					do {
+						do {
+							bandera = true;
+							System.out.println("==== Registo de usuario ====");
+							System.out.println("Seleccione el tipo de usuario:");
+							System.out.println("1- Particular");
+							System.out.println("2- Agencia");
+							try {
+								opcion = sc.nextInt();
+							} catch (InputMismatchException ime) {
+								bandera = false;
+								System.out.println("Formato Incorrecto");
+								sc.next();
+							}
+						} while (bandera == false);
+						switch (opcion) {
+						case 1:
+							System.out.println("Ingrese su Apellido");
+							String apellido = sc.next();
+							unCliente = new ClienteParticular(nombre, email, telefono, apellido, dni);
+							tipoElegido = true;
+							break;
+						case 2:
+							unCliente = new ClienteAgencia(nombre, email, telefono, dni);
+							tipoElegido = true;
+							break;
+						default:
+							System.out.println("Opcion inexistente");
+							break;
+						}
+					} while (tipoElegido == false);
+					clienteDao.guardarCliente(unCliente);
+				}
+
+				do {
+					System.out.println("Elija un mozo de la lista de mozos segun su ID:");
+					unMozo = null;
+					do {
+						bandera = true;
+						mozoDao.obtenerMozos().stream().forEach(System.out::println);
+						try {
+							id = sc.nextInt();
+						} catch (InputMismatchException ime) {
+							bandera = false;
+							System.out.println("Formato Incorrecto");
+							sc.next();
+						}
+					} while (bandera == false);
+					try {
+						bandEncontrado = true;
+						unMozo = mozoDao.obtenerMozoId(id);
+					} catch (NoResultException nre) {
+						System.out.println("Id inexistente, intente nuevamente");
+						bandEncontrado = false;
+					}
+				} while (bandEncontrado == false);
+				do {
+					bandera = true;
+					System.out.println("Cuantos comensales seran?");
+					try {
+						comensales = sc.nextInt();
+					} catch (InputMismatchException ime) {
+						bandera = false;
+						System.out.println("Formato Incorrecto");
+						sc.next();
+					}
+				} while (bandera == false);
+				List<Mesa> mesasS1 = null;
+				List<Mesa> mesasS2 = null;
+				int asientos1 = 0, asientos2 = 0;
+				for (int i = 0; i < salonDao.obtenerSalon(1).getMesas().size(); i++) {
+					unaMesa = salonDao.obtenerSalon(1).getMesas().get(i);
+					if (unaMesa.getEstado().equals("Libre")) {
+						mesasS1.add(unaMesa);
+						asientos1 = asientos1 + 4;
+					}
+				}
+
+				for (int i = 0; i < salonDao.obtenerSalon(2).getMesas().size(); i++) {
+					unaMesa = salonDao.obtenerSalon(2).getMesas().get(i);
+					if (unaMesa.getEstado().equals("Libre")) {
+						mesasS2.add(unaMesa);
+						asientos2 = asientos2 + 4;
+					}
+				}
+
+				int mesasRequeridas = comensales / 4;
+				int resto = comensales % 4;
+				if (comensales <= 4) {
+					mesasRequeridas = 1;
+				}
+				else
+				{
+					if (comensales%4==0) {
+					mesasRequeridas=comensales/4;
+					}
+					else {
+						mesasRequeridas=comensales/4;
+						mesasRequeridas=mesasRequeridas+1;
+					}
+				}
 				
+				
+				
+				
+				if (asientos1 < asientos2) {
+					if (asientos1 >= comensales) {
+						for (int i=1; i<mesasRequeridas;i++) {
+							
+						}
+					}
+				}
+
+				/*
+				 * unaReserva = new Reserva(unCliente, Mozo mozoAtendiendo, ArrayList<Mesa>
+				 * mesasOcupadas, Salon salonUsado, LocalDate fecha, LocalDateTime hora, double
+				 * totalAPagar, String estado)
+				 * 
+				 * reservaDao.guardarReserva(unaReserva);
+				 */
 			}
 				break;
 			case 6: {
@@ -285,7 +438,7 @@ public class Principal {
 			}
 				break;
 			case 7: {
-				boolean bandAgencia=true,bandPart=true;
+				boolean bandAgencia = true, bandPart = true;
 				do {
 					bandera = true;
 					System.out.println("Ingrese el Dni o Cuil");
@@ -298,55 +451,52 @@ public class Principal {
 					}
 				} while (bandera == false);
 				try {
-				unCliente=clienteDao.obtenerClienteAgencia(dni);
-				}catch(NoResultException nre){
-					bandAgencia=false;
-					unCliente=null;
+					unCliente = clienteDao.obtenerClienteAgencia(dni);
+				} catch (NoResultException nre) {
+					bandAgencia = false;
+					unCliente = null;
 				}
-				if (unCliente==null) {
+				if (unCliente == null) {
 					try {
-						unCliente=clienteDao.obtenerClienteParticular(dni);
-						}catch(NoResultException nre){
-							bandPart=false;
-							unCliente=null;
-						}
+						unCliente = clienteDao.obtenerClienteParticular(dni);
+					} catch (NoResultException nre) {
+						bandPart = false;
+						unCliente = null;
+					}
 				}
-				if (bandAgencia==false && bandPart==false) {
+				if (bandAgencia == false && bandPart == false) {
 					System.out.println("No se encontro ningun usuario");
-				}
-				else
-				{
+				} else {
 					System.out.println(unCliente);
 				}
-				
-				
+
 			}
 				break;
 			case 8: {
-				int id=0;
+				int id = 0;
 				reservaDao.obtenerReservas().stream().forEach(System.out::println);
 				System.out.println(" ");
-				do{
-					bandera=true;
+				do {
+					bandera = true;
 					System.out.println("Ingrese el id de la Reserva");
 					try {
-						id=sc.nextInt();
-					}catch (InputMismatchException ime){
+						id = sc.nextInt();
+					} catch (InputMismatchException ime) {
 						bandera = false;
 						System.out.println("Formato incorrecto");
 						sc.next();
 					}
-				}while (bandera==false);
-				bandera=true;
+				} while (bandera == false);
+				bandera = true;
 				try {
-				unaReserva=reservaDao.obtenerReserva(id);
-				}catch(NoResultException nre) {
+					unaReserva = reservaDao.obtenerReserva(id);
+				} catch (NoResultException nre) {
 					System.out.println("No se ha encontrado dicha reserva");
-					bandera=false;
+					bandera = false;
 				}
-				if(bandera==true) {
-				reservaDao.borrarReserva(unaReserva);
-				System.out.println("Reserva borrada correctamente!");
+				if (bandera == true) {
+					reservaDao.borrarReserva(unaReserva);
+					System.out.println("Reserva borrada correctamente!");
 				}
 			}
 				break;
