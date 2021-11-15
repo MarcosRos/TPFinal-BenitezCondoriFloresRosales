@@ -242,6 +242,32 @@ public class Principal {
 			}
 				break;
 			case 5: {
+				boolean bandEncontrado=true;
+				do {
+					bandera=true;
+					System.out.println("Ingrese el DNI o CUIL del usuario");
+					try {
+					dni=sc.nextLong();
+					}catch (InputMismatchException ime) {
+						bandera=false;
+						System.out.println("Formato Incorrecto");
+						sc.next();
+					}
+					}while(bandera==false);
+				try {
+				unCliente=clienteDao.obtenerClienteParticular(dni);
+				}catch (NoResultException nre) {
+					try {
+					unCliente= clienteDao.obtenerClienteAgencia(dni);
+					}catch (NoResultException nrex) {
+						System.out.println("No se ha encontrado ningun usuario con dicho dni o cuil");
+						bandEncontrado=false;
+					}
+				}
+				if (bandEncontrado==false) {
+					System.out.println("==== Registo de usuario ====");
+					System.out.println("");
+				}
 				
 			}
 				break;
