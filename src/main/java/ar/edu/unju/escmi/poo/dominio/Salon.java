@@ -3,7 +3,10 @@ package ar.edu.unju.escmi.poo.dominio;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,6 +19,8 @@ public class Salon implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id",unique=true, nullable=false)
 	private int id;
 	@OneToMany(mappedBy="salon")
 	private List <Mesa> mesas;
