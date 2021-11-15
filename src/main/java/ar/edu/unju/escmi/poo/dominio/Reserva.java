@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -21,8 +20,6 @@ public class Reserva implements Serializable{
 	private int id;
 	private Cliente clienteReserva;
 	private Mozo mozoAtendiendo;
-	
-	@OneToMany(mappedBy="mesa")
 	private ArrayList<Mesa> mesasOcupadas;
 	private Salon salonUsado;
 	private LocalDate fecha;

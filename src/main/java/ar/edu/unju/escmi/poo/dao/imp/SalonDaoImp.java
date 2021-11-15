@@ -20,7 +20,7 @@ public class SalonDaoImp implements ISalonDao{
 		manager.getTransaction().commit();
 	}
 
-	public List<Salon> obtenerSalon() {
+	public List<Salon> obtenerSalones() {
 		// TODO Auto-generated method stub
 		@SuppressWarnings("unchecked")
 		List<Salon> salones = (List<Salon>) manager.createQuery("SELECT e FROM Salon e").getResultList();

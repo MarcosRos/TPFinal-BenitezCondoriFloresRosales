@@ -1,23 +1,30 @@
 package ar.edu.unju.escmi.poo.dominio;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="salones")
-public class Salon {
+public class Salon implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	private int id;
-	private ArrayList <Mesa> mesas;
+	@OneToMany(mappedBy="salon")
+	private List <Mesa> mesas;
 	
 	public Salon() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Salon(ArrayList<Mesa> mesas) {
+	public Salon(List<Mesa> mesas) {
 		super();
 		this.mesas = mesas;
 	}
@@ -28,10 +35,10 @@ public class Salon {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public ArrayList<Mesa> getMesas() {
+	public List<Mesa> getMesas() {
 		return mesas;
 	}
-	public void setMesas(ArrayList<Mesa> mesas) {
+	public void setMesas(List<Mesa> mesas) {
 		this.mesas = mesas;
 	}
 
