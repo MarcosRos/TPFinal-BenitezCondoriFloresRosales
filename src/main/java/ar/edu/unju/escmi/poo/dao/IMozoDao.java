@@ -11,4 +11,5 @@ public interface IMozoDao {
 	public List<Mozo> obtenerMozos();
 	public void modificarMozo(Mozo mozo);
 	public Mozo obtenerMozo(long dniMozo);
+	public Mozo obtenerMozoId(int idMozo);
 }

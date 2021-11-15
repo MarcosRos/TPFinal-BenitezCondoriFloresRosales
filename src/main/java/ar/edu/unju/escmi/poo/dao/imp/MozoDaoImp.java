@@ -48,4 +48,12 @@ public class MozoDaoImp implements IMozoDao{
 		return mozo;
 	}
 	
+	public Mozo obtenerMozoId(int idMozo) {
+		// TODO Auto-generated method stub
+		Query query = manager.createQuery("SELECT e FROM Mozo e " + "WHERE e.id = :idMozo");
+		query.setParameter("idMozo", idMozo);
+		Mozo mozo = (Mozo)query.getSingleResult();
+		return mozo;
+	}
+	
 }

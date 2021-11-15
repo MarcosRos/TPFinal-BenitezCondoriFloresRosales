@@ -84,7 +84,7 @@ public class Mozo implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Mozo [nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni + ", reservasAtendidas="
+		return "Mozo [id="+ id +", nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni + ", reservasAtendidas="
 				+ reservasAtendidas + "]";
 	}
 
