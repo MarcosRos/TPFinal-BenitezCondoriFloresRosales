@@ -68,7 +68,7 @@ public class Mesa implements Serializable{
 	}
 
 	public void setSalon(Salon salon) {
-		this.salon = salon;
+		this.salon =salon;
 	}
 
 	@Override

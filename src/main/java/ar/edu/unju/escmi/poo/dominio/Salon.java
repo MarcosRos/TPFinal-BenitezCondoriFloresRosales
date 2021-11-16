@@ -22,7 +22,7 @@ public class Salon implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id",unique=true, nullable=false)
 	private int id;
-	@OneToMany(mappedBy="salon")
+	@OneToMany
 	private List <Mesa> mesas;
 	
 	public Salon() {

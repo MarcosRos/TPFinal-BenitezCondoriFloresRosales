@@ -27,7 +27,7 @@ public class Mozo implements Serializable{
 	private String apellido;
 	@Column(name="dni")
 	private long dni;
-	@Column(name="reserva")
+	@Column(name="reserva" , length = 9999999)
 	private ArrayList <Reserva> reservasAtendidas; 
 	
 	public Mozo() {

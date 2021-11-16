@@ -9,8 +9,6 @@ import java.util.Scanner;
 
 import javax.persistence.NoResultException;
 
-import org.hibernate.internal.build.AllowSysOut;
-
 import ar.edu.unju.escmi.poo.dao.IClienteDao;
 import ar.edu.unju.escmi.poo.dao.IMesaDao;
 import ar.edu.unju.escmi.poo.dao.IMozoDao;
@@ -43,7 +41,7 @@ public class Principal {
 		int opc = 0;
 		long dni = 0;
 		Cliente unCliente = null;
-		Mesa unaMesa;
+		Mesa unaMesa = null;
 		Mozo unMozo, mozoEncontrado;
 		Reserva unaReserva = null;
 		Salon unSalon;
@@ -72,6 +70,7 @@ public class Principal {
 			salonDao.modificarSalon(salon2);
 
 		}
+		
 		do {
 			do {
 				bandera = true;
@@ -88,8 +87,8 @@ public class Principal {
 			case 1: {
 				if (mozoDao.obtenerMozos().size() < 6) {
 					do {
-						System.out.println("Ingrese el DNI del nuevo mozo");
 						do {
+							System.out.println("Ingrese el DNI del nuevo mozo");
 							try {
 								dni = sc.nextLong();
 								bandera = true;
@@ -223,11 +222,11 @@ public class Principal {
 					} while (bandera == false);
 					switch (opcion) {
 					case 1:
-						salonDao.obtenerSalon(1).getMesas().stream().filter(s -> s.getEstado().equals("Ocupada"))
+						salonDao.obtenerSalon(1).getMesas().stream().filter(s -> s.getEstado().equals("Ocupado"))
 								.forEach(System.out::println);
 						break;
 					case 2:
-						salonDao.obtenerSalon(2).getMesas().stream().filter(s -> s.getEstado().equals("Ocupada"))
+						salonDao.obtenerSalon(2).getMesas().stream().filter(s -> s.getEstado().equals("Ocupado"))
 								.forEach(System.out::println);
 						break;
 					case 3:
@@ -242,160 +241,255 @@ public class Principal {
 			}
 				break;
 			case 5: {
-				boolean bandEncontrado = true;
-				int id = 0, comensales = 0;
-				do {
-					bandera = true;
-					System.out.println("Ingrese el DNI o CUIL del usuario");
-					try {
-						dni = sc.nextLong();
-					} catch (InputMismatchException ime) {
-						bandera = false;
-						System.out.println("Formato Incorrecto");
-						sc.next();
-					}
-				} while (bandera == false);
-				try {
-					unCliente = clienteDao.obtenerClienteParticular(dni);
-				} catch (NoResultException nre) {
-					try {
-						unCliente = clienteDao.obtenerClienteAgencia(dni);
-					} catch (NoResultException nrex) {
-						System.out.println("No se ha encontrado ningun usuario con dicho dni o cuil");
-						bandEncontrado = false;
-					}
-				}
-				if (bandEncontrado == false) {
+				boolean bandEncontrado = true, banderaSalon = false;
+				int id = 0, comensales = 0, salonElegido = 0;
 
-					System.out.println("Ingrese el nombre del cliente");
-					String nombre = sc.next();
-					System.out.println("Ingrese el email del cliente");
-					String email = sc.next();
-					System.out.println("Ingrese el telefono del cliente");
-					long telefono = sc.nextLong();
+				if (mozoDao.obtenerMozos().isEmpty()) {
+					System.out.println("Lo sentimos, no hay mozos disponibles en este momento");
+				} else {
+					ArrayList<Mozo> mozosDisponibles = new ArrayList<Mozo>();
+					;
 
-					boolean tipoElegido = false;
-					int opcion = 0;
-					do {
+					for (int i = 0; i < mozoDao.obtenerMozos().size(); i++) {
+						if (mozoDao.obtenerMozos().get(i).getReservasAtendidas() == null
+								|| mozoDao.obtenerMozos().get(i).getReservasAtendidas().size() < 4) {
+							mozosDisponibles.add(mozoDao.obtenerMozos().get(i));
+						}
+					}
+
+					if (mozosDisponibles.size() != 0) {
 						do {
 							bandera = true;
-							System.out.println("==== Registo de usuario ====");
-							System.out.println("Seleccione el tipo de usuario:");
-							System.out.println("1- Particular");
-							System.out.println("2- Agencia");
+							System.out.println("Ingrese el DNI o CUIL del usuario");
 							try {
-								opcion = sc.nextInt();
+								dni = sc.nextLong();
 							} catch (InputMismatchException ime) {
 								bandera = false;
 								System.out.println("Formato Incorrecto");
 								sc.next();
 							}
 						} while (bandera == false);
-						switch (opcion) {
-						case 1:
-							System.out.println("Ingrese su Apellido");
-							String apellido = sc.next();
-							unCliente = new ClienteParticular(nombre, email, telefono, apellido, dni);
-							tipoElegido = true;
-							break;
-						case 2:
-							unCliente = new ClienteAgencia(nombre, email, telefono, dni);
-							tipoElegido = true;
-							break;
-						default:
-							System.out.println("Opcion inexistente");
-							break;
-						}
-					} while (tipoElegido == false);
-					clienteDao.guardarCliente(unCliente);
-				}
-
-				do {
-					System.out.println("Elija un mozo de la lista de mozos segun su ID:");
-					unMozo = null;
-					do {
-						bandera = true;
-						mozoDao.obtenerMozos().stream().forEach(System.out::println);
 						try {
-							id = sc.nextInt();
-						} catch (InputMismatchException ime) {
-							bandera = false;
-							System.out.println("Formato Incorrecto");
-							sc.next();
+							unCliente = clienteDao.obtenerClienteParticular(dni);
+						} catch (NoResultException nre) {
+							try {
+								unCliente = clienteDao.obtenerClienteAgencia(dni);
+							} catch (NoResultException nrex) {
+								System.out.println("No se ha encontrado ningun usuario con dicho dni o cuil");
+								bandEncontrado = false;
+							}
 						}
-					} while (bandera == false);
-					try {
-						bandEncontrado = true;
-						unMozo = mozoDao.obtenerMozoId(id);
-					} catch (NoResultException nre) {
-						System.out.println("Id inexistente, intente nuevamente");
-						bandEncontrado = false;
-					}
-				} while (bandEncontrado == false);
-				do {
-					bandera = true;
-					System.out.println("Cuantos comensales seran?");
-					try {
-						comensales = sc.nextInt();
-					} catch (InputMismatchException ime) {
-						bandera = false;
-						System.out.println("Formato Incorrecto");
-						sc.next();
-					}
-				} while (bandera == false);
-				List<Mesa> mesasS1 = null;
-				List<Mesa> mesasS2 = null;
-				int asientos1 = 0, asientos2 = 0;
-				for (int i = 0; i < salonDao.obtenerSalon(1).getMesas().size(); i++) {
-					unaMesa = salonDao.obtenerSalon(1).getMesas().get(i);
-					if (unaMesa.getEstado().equals("Libre")) {
-						mesasS1.add(unaMesa);
-						asientos1 = asientos1 + 4;
-					}
-				}
+						if (bandEncontrado == false) {
 
-				for (int i = 0; i < salonDao.obtenerSalon(2).getMesas().size(); i++) {
-					unaMesa = salonDao.obtenerSalon(2).getMesas().get(i);
-					if (unaMesa.getEstado().equals("Libre")) {
-						mesasS2.add(unaMesa);
-						asientos2 = asientos2 + 4;
-					}
-				}
+							System.out.println("Ingrese el nombre del cliente");
+							String nombre = sc.next();
+							System.out.println("Ingrese el email del cliente");
+							String email = sc.next();
+							System.out.println("Ingrese el telefono del cliente");
+							long telefono = sc.nextLong();
 
-				int mesasRequeridas = comensales / 4;
-				int resto = comensales % 4;
-				if (comensales <= 4) {
-					mesasRequeridas = 1;
-				}
-				else
-				{
-					if (comensales%4==0) {
-					mesasRequeridas=comensales/4;
-					}
-					else {
-						mesasRequeridas=comensales/4;
-						mesasRequeridas=mesasRequeridas+1;
-					}
-				}
-				
-				
-				
-				
-				if (asientos1 < asientos2) {
-					if (asientos1 >= comensales) {
-						for (int i=1; i<mesasRequeridas;i++) {
-							
+							boolean tipoElegido = false;
+							int opcion = 0;
+							do {
+								do {
+									bandera = true;
+									System.out.println("==== Registo de usuario ====");
+									System.out.println("Seleccione el tipo de usuario:");
+									System.out.println("1- Particular");
+									System.out.println("2- Agencia");
+									try {
+										opcion = sc.nextInt();
+									} catch (InputMismatchException ime) {
+										bandera = false;
+										System.out.println("Formato Incorrecto");
+										sc.next();
+									}
+								} while (bandera == false);
+								switch (opcion) {
+								case 1:
+									System.out.println("Ingrese su Apellido");
+									String apellido = sc.next();
+									unCliente = new ClienteParticular(nombre, email, telefono, apellido, dni);
+									tipoElegido = true;
+									break;
+								case 2:
+									unCliente = new ClienteAgencia(nombre, email, telefono, dni);
+									tipoElegido = true;
+									break;
+								default:
+									System.out.println("Opcion inexistente");
+									break;
+								}
+							} while (tipoElegido == false);
+							clienteDao.guardarCliente(unCliente);
 						}
+
+						do {
+							System.out.println("Elija un mozo de la lista de mozos segun su ID:");
+							unMozo = null;
+							do {
+								bandera = true;
+								mozosDisponibles.stream().forEach(System.out::println);
+								try {
+									id = sc.nextInt();
+								} catch (InputMismatchException ime) {
+									bandera = false;
+									System.out.println("Formato Incorrecto");
+									sc.next();
+								}
+							} while (bandera == false);
+							try {
+								bandEncontrado = true;
+								unMozo = mozoDao.obtenerMozoId(id);
+							} catch (NoResultException nre) {
+								System.out.println("Id inexistente, intente nuevamente");
+								bandEncontrado = false;
+							}
+							if (unMozo != null) {
+								if (unMozo.getReservasAtendidas() != null) {
+									if (unMozo.getReservasAtendidas().size() == 4) {
+										System.out.println(
+												"El mozo seleccionado ya ha cumplido su trabajo el dia de hoy");
+										bandEncontrado = false;
+									}
+								}
+							}
+						} while (bandEncontrado == false);
+						do {
+							bandera = true;
+							System.out.println("Cuantos comensales seran?");
+							try {
+								comensales = sc.nextInt();
+							} catch (InputMismatchException ime) {
+								bandera = false;
+								System.out.println("Formato Incorrecto");
+								sc.next();
+							}
+						} while (bandera == false);
+						ArrayList<Mesa> mesasS1 = new ArrayList<Mesa>();
+						ArrayList<Mesa> mesasS2 = new ArrayList<Mesa>();
+						int asientos1 = 0, asientos2 = 0;
+						for (int i = 0; i < salonDao.obtenerSalon(1).getMesas().size(); i++) {
+							unaMesa = salonDao.obtenerSalon(1).getMesas().get(i);
+							if (unaMesa.getEstado().equals("Libre")) {
+								mesasS1.add(unaMesa);
+								asientos1 = asientos1 + 4;
+							}
+						}
+
+						for (int i = 0; i < salonDao.obtenerSalon(2).getMesas().size(); i++) {
+							unaMesa = salonDao.obtenerSalon(2).getMesas().get(i);
+							if (unaMesa.getEstado().equals("Libre")) {
+								mesasS2.add(unaMesa);
+								asientos2 = asientos2 + 4;
+							}
+						}
+
+						int mesasRequeridas = comensales / 4;
+						if (comensales <= 4) {
+							mesasRequeridas = 1;
+						} else {
+							if (comensales % 4 == 0) {
+								mesasRequeridas = comensales / 4;
+							} else {
+								mesasRequeridas = comensales / 4;
+								mesasRequeridas = mesasRequeridas + 1;
+							}
+						}
+
+						if ((asientos1 >= comensales) && (asientos2 >= comensales)) {
+							do {
+								bandera = true;
+								System.out.println("Elija en que salon desea ocupar");
+								System.out.println("1- Salon 1");
+								System.out.println("2- Salon 2");
+								try {
+									salonElegido = sc.nextInt();
+								} catch (InputMismatchException ime) {
+									bandera = false;
+									System.out.println("Formato Incorrecto");
+									sc.next();
+								}
+							} while (bandera == false);
+							banderaSalon = true;
+						} else if (asientos1 >= comensales) {
+							System.out.println("El unico salon disponible es el Salon 1");
+							salonElegido = 1;
+							banderaSalon = true;
+						} else if (asientos2 >= comensales) {
+							System.out.println("El unico salon disponible es el Salon 2");
+							salonElegido = 2;
+							banderaSalon = true;
+						} else {
+							System.out.println("No hay salones con el espacio requerido");
+						}
+						ArrayList<Mesa> mesasOcupadas = new ArrayList<Mesa>();
+
+						if (banderaSalon == true) {
+							if (salonElegido == 1) {
+								for (int i = 0; i < mesasRequeridas; i++) {
+									mesasS1.get(i).setEstado("Ocupado");
+									if (comensales >= 4) {
+										comensales = comensales - 4;
+										unaMesa = mesasS1.get(i);
+										unaMesa.setCapacidad(unaMesa.getCapacidad() - 4);
+									} else {
+										int comensalesaux = comensales;
+										comensales = comensales - comensales;
+										unaMesa = mesasS1.get(i);
+										unaMesa.setCapacidad(unaMesa.getCapacidad() - comensalesaux);
+									}
+									mesasOcupadas.add(unaMesa);
+									mesaDao.modificarMesa(unaMesa);
+								}
+							} else {
+								mesasOcupadas = new ArrayList<Mesa>();
+								for (int i = 0; i < mesasRequeridas; i++) {
+									mesasS2.get(i).setEstado("Ocupado");
+									if (comensales >= 4) {
+										comensales = comensales - 4;
+										unaMesa = mesasS2.get(i);
+										unaMesa.setCapacidad(unaMesa.getCapacidad() - 4);
+									} else {
+										int comensalesaux = comensales;
+										comensales = comensales - comensales;
+										unaMesa = mesasS2.get(i);
+										unaMesa.setCapacidad(unaMesa.getCapacidad() - comensalesaux);
+									}
+									mesasOcupadas.add(unaMesa);
+									mesaDao.modificarMesa(unaMesa);
+								}
+							}
+							double totalAPagar = 0;
+							do {
+								bandera = true;
+								System.out.println("Ingrese el total a pagar");
+								try {
+									totalAPagar = sc.nextDouble();
+								} catch (InputMismatchException ime) {
+									bandera = false;
+									System.out.println("Formato Incorrecto");
+									sc.next();
+								}
+							} while (bandera == false);
+							unSalon = salonDao.obtenerSalon(salonElegido);
+							unaReserva = new Reserva(unCliente, unMozo, mesasOcupadas, salonElegido, LocalDate.now(),
+									LocalDateTime.now(), totalAPagar, "Sin Pagar");
+							reservaDao.guardarReserva(unaReserva);
+
+							if (unMozo.getReservasAtendidas() != null) {
+								unMozo.getReservasAtendidas().add(unaReserva);
+							} else {
+								ArrayList<Reserva> reservasAAtender = new ArrayList<Reserva>();
+								reservasAAtender.add(unaReserva);
+								unMozo.setReservasAtendidas(reservasAAtender);
+							}
+							mozoDao.modificarMozo(unMozo);
+						}
+					} else {
+						System.out.println("Todos los mozos se encuentran ocupados por el momento");
 					}
 				}
-
-				/*
-				 * unaReserva = new Reserva(unCliente, Mozo mozoAtendiendo, ArrayList<Mesa>
-				 * mesasOcupadas, Salon salonUsado, LocalDate fecha, LocalDateTime hora, double
-				 * totalAPagar, String estado)
-				 * 
-				 * reservaDao.guardarReserva(unaReserva);
-				 */
 			}
 				break;
 			case 6: {

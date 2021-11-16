@@ -5,7 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,11 +20,15 @@ public class Reserva implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id",unique=true, nullable=false)
 	private int id;
 	private Cliente clienteReserva;
+	@Column (length = 9999999)
 	private Mozo mozoAtendiendo;
+	@Column (length = 9999999)
 	private ArrayList<Mesa> mesasOcupadas;
-	private Salon salonUsado;
+	private int idSalonUsado;
 	private LocalDate fecha;
 	private LocalDateTime hora;
 	private double totalAPagar;
@@ -31,13 +38,13 @@ public class Reserva implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Reserva(Cliente clienteReserva, Mozo mozoAtendiendo, ArrayList<Mesa> mesasOcupadas, Salon salonUsado,
+	public Reserva(Cliente clienteReserva, Mozo mozoAtendiendo, ArrayList<Mesa> mesasOcupadas, int idSalonUsado,
 			LocalDate fecha, LocalDateTime hora, double totalAPagar, String estado) {
 		super();
 		this.clienteReserva = clienteReserva;
 		this.mozoAtendiendo = mozoAtendiendo;
 		this.mesasOcupadas = mesasOcupadas;
-		this.salonUsado = salonUsado;
+		this.idSalonUsado = idSalonUsado;
 		this.fecha = fecha;
 		this.hora = hora;
 		this.totalAPagar = totalAPagar;
@@ -76,12 +83,12 @@ public class Reserva implements Serializable{
 		this.mesasOcupadas = mesasOcupadas;
 	}
 
-	public Salon getSalonUsado() {
-		return salonUsado;
+	public int getIdSalonUsado() {
+		return idSalonUsado;
 	}
 
-	public void setSalonUsado(Salon salonUsado) {
-		this.salonUsado = salonUsado;
+	public void setSalonUsado(int idSalonUsado) {
+		this.idSalonUsado = idSalonUsado;
 	}
 
 	public LocalDate getFecha() {
@@ -114,6 +121,13 @@ public class Reserva implements Serializable{
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	@Override
+	public String toString() {
+		return "Reserva [id=" + id + ", clienteReserva=" + clienteReserva + ", IdDelMozoAtendiendo=" + mozoAtendiendo.getId()
+				+ ", mesasOcupadas=" + mesasOcupadas + ", idSalonUsado=" + idSalonUsado + ", fecha=" + fecha + ", hora="
+				+ hora + ", totalAPagar=" + totalAPagar + ", estado=" + estado + "]";
 	}
 	
 	
