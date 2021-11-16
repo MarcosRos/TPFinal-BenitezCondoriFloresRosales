@@ -2,7 +2,7 @@ package ar.edu.unju.escmi.poo.dominio;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import javax.persistence.Column;
@@ -30,7 +30,7 @@ public class Reserva implements Serializable{
 	private ArrayList<Mesa> mesasOcupadas;
 	private int idSalonUsado;
 	private LocalDate fecha;
-	private LocalDateTime hora;
+	private LocalTime hora;
 	private double totalAPagar;
 	private String estado;
 	
@@ -39,7 +39,7 @@ public class Reserva implements Serializable{
 	}
 
 	public Reserva(Cliente clienteReserva, Mozo mozoAtendiendo, ArrayList<Mesa> mesasOcupadas, int idSalonUsado,
-			LocalDate fecha, LocalDateTime hora, double totalAPagar, String estado) {
+			LocalDate fecha, LocalTime hora, double totalAPagar, String estado) {
 		super();
 		this.clienteReserva = clienteReserva;
 		this.mozoAtendiendo = mozoAtendiendo;
@@ -99,11 +99,11 @@ public class Reserva implements Serializable{
 		this.fecha = fecha;
 	}
 
-	public LocalDateTime getHora() {
+	public LocalTime getHora() {
 		return hora;
 	}
 
-	public void setHora(LocalDateTime hora) {
+	public void setHora(LocalTime hora) {
 		this.hora = hora;
 	}
 
