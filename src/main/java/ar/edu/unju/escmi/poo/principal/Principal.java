@@ -9,6 +9,8 @@ import java.util.Scanner;
 
 import javax.persistence.NoResultException;
 
+import org.hibernate.internal.build.AllowSysOut;
+
 import ar.edu.unju.escmi.poo.dao.IClienteDao;
 import ar.edu.unju.escmi.poo.dao.IMesaDao;
 import ar.edu.unju.escmi.poo.dao.IMozoDao;
@@ -43,7 +45,7 @@ public class Principal {
 		Cliente unCliente = null;
 		Mesa unaMesa = null;
 		Mozo unMozo, mozoEncontrado;
-		Reserva unaReserva = null;
+		Reserva unaReserva = new Reserva();
 		Salon unSalon;
 
 		if (salonDao.obtenerSalones().size() == 0) {
@@ -280,13 +282,23 @@ public class Principal {
 							}
 						}
 						if (bandEncontrado == false) {
-
+							
+							long telefono =0;
 							System.out.println("Ingrese el nombre del cliente");
 							String nombre = sc.next();
 							System.out.println("Ingrese el email del cliente");
 							String email = sc.next();
-							System.out.println("Ingrese el telefono del cliente");
-							long telefono = sc.nextLong();
+							do {
+								System.out.println("Ingrese el telefono del cliente");
+								bandera=true;
+								try {
+									telefono = sc.nextLong();
+								}catch(InputMismatchException ime){
+									bandera = false;
+									System.out.println("Formato Incorrecto");
+									sc.next();
+								}
+							}while (bandera==false);
 
 							boolean tipoElegido = false;
 							int opcion = 0;
@@ -474,8 +486,7 @@ public class Principal {
 							} while (bandera == false);
 							unSalon = salonDao.obtenerSalon(salonElegido);
 							
-							unaReserva = new Reserva(unCliente, unMozo, mesasOcupadas, salonElegido, LocalDate.now(),
-									LocalTime.now(), totalAPagar, "Sin Pagar");
+							unaReserva=unaReserva.crearReserva(unCliente, unMozo, mesasOcupadas, salonElegido, totalAPagar);
 							reservaDao.guardarReserva(unaReserva);
 
 							if (unMozo.getReservasAtendidas() != null) {
@@ -483,7 +494,7 @@ public class Principal {
 							} else {
 								ArrayList<Reserva> reservasAAtender = new ArrayList<Reserva>();
 								reservasAAtender.add(unaReserva);
-								unMozo.setReservasAtendidas(reservasAAtender);
+								unMozo=unMozo.asignarReservas(unMozo, reservasAAtender);
 							}
 							mozoDao.modificarMozo(unMozo);
 						}
@@ -590,6 +601,25 @@ public class Principal {
 					bandera = false;
 				}
 				if (bandera == true) {
+					List<Mesa> mesasALiberar = unaReserva.getMesasOcupadas();
+					for(int i=0;i<mesasALiberar.size();i++) {
+						unaMesa = mesasALiberar.get(i);
+						unaMesa.setCapacidad(4);
+						unaMesa.setEstado("Libre");
+						mesaDao.modificarMesa(unaMesa);
+					}
+					unMozo=unaReserva.getMozoAtendiendo();
+					unMozo=mozoDao.obtenerMozo(unMozo.getId());
+					System.out.println(unaReserva);
+					System.out.println(unMozo);
+					System.out.println(unMozo.getReservasAtendidas());
+					
+					for(int i=0;i<unMozo.getReservasAtendidas().size();i++){
+						if(unMozo.getReservasAtendidas().get(i).getId()==unaReserva.getId()){
+							unMozo.getReservasAtendidas().remove(i);
+						}
+					}
+					mozoDao.modificarMozo(unMozo);
 					reservaDao.borrarReserva(unaReserva);
 					System.out.println("Reserva borrada correctamente!");
 				}

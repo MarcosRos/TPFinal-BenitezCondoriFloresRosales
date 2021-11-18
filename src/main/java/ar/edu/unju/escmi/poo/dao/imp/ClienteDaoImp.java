@@ -49,10 +49,10 @@ public class ClienteDaoImp implements IClienteDao{
 		return cliente;
 	}
 	
-	public Cliente obtenerClienteAgencia(long cuitCliente) {
+	public Cliente obtenerClienteAgencia(long cuilCliente) {
 		// TODO Auto-generated method stub
-		Query query = manager.createQuery("SELECT e FROM ClienteAgencia e " + "WHERE e.cuit = :cuitCliente");
-		query.setParameter("cuitCliente", cuitCliente);
+		Query query = manager.createQuery("SELECT e FROM ClienteAgencia e " + "WHERE e.cuil = :cuilCliente");
+		query.setParameter("cuilCliente", cuilCliente);
 		Cliente cliente = (Cliente)query.getSingleResult();
 		return cliente;
 	}
