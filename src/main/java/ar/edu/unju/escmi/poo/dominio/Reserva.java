@@ -50,7 +50,13 @@ public class Reserva implements Serializable{
 		this.totalAPagar = totalAPagar;
 		this.estado = estado;
 	}
-
+	
+	public Reserva crearReserva(Cliente unCliente, Mozo unMozo,ArrayList<Mesa>mesasOcupadas, int salonElegido, double totalAPagar) {
+		Reserva reservaCreada=new Reserva(unCliente, unMozo, mesasOcupadas, salonElegido, LocalDate.now(),
+				LocalTime.now(), totalAPagar, "Sin Pagar");
+		return reservaCreada;
+	}
+	
 	public int getId() {
 		return id;
 	}

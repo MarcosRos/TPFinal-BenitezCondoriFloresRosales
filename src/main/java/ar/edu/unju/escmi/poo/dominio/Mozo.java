@@ -41,7 +41,12 @@ public class Mozo implements Serializable{
 		this.dni = dni;
 		this.reservasAtendidas = reservasAtendidas;
 	}
-
+	
+	public Mozo asignarReservas(Mozo unMozo,ArrayList<Reserva>reservasAAtender) {
+		unMozo.setReservasAtendidas(reservasAAtender);
+		return unMozo;
+	}
+	
 	public int getId() {
 		return id;
 	}
