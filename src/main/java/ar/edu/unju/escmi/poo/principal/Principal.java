@@ -527,18 +527,31 @@ public class Principal {
 					System.out.println("No se encontro una reserva con ese id");
 					reservaEncontrada = false;
 				}
-				if (reservaEncontrada == true) {
-					unaReserva.setEstado("Pagado");
-					unaReserva.setTotalAPagar(0);
-					List<Mesa> mesasALiberar = unaReserva.getMesasOcupadas();
-					unaReserva.setMesasOcupadas(null);
-					reservaDao.modificarReserva(unaReserva);
+				if (unaReserva.getEstado().equals("Pagado")){
+					System.out.println("Ya se pago esa Reserva");
+				}
+				else {
+					if (reservaEncontrada == true) {
+						unaReserva.setEstado("Pagado");
+						unaReserva.setTotalAPagar(0);
+						List<Mesa> mesasALiberar = unaReserva.getMesasOcupadas();
+						unaReserva.setMesasOcupadas(null);
+						reservaDao.modificarReserva(unaReserva);
 
-					for (int i = 0; i < mesasALiberar.size(); i++) {
-						unaMesa = mesasALiberar.get(i);
-						unaMesa.setCapacidad(4);
-						unaMesa.setEstado("Libre");
-						mesaDao.modificarMesa(unaMesa);
+						for (int i = 0; i < mesasALiberar.size(); i++) {
+							unaMesa = mesasALiberar.get(i);
+							unaMesa.setCapacidad(4);
+							unaMesa.setEstado("Libre");
+							mesaDao.modificarMesa(unaMesa);
+						}
+						
+						unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getId());
+						for(int i=0;i<unMozo.getReservasAtendidas().size();i++){
+							if(unMozo.getReservasAtendidas().get(i).getId()==unaReserva.getId()){
+								unMozo.getReservasAtendidas().remove(i);
+							}
+						}
+						mozoDao.modificarMozo(unMozo);
 					}
 				}
 			}
@@ -601,25 +614,24 @@ public class Principal {
 					bandera = false;
 				}
 				if (bandera == true) {
-					List<Mesa> mesasALiberar = unaReserva.getMesasOcupadas();
-					for(int i=0;i<mesasALiberar.size();i++) {
-						unaMesa = mesasALiberar.get(i);
-						unaMesa.setCapacidad(4);
-						unaMesa.setEstado("Libre");
-						mesaDao.modificarMesa(unaMesa);
+					if(unaReserva.getEstado().equals("Sin Pagar")) {
+						List<Mesa> mesasALiberar = unaReserva.getMesasOcupadas();
+						for(int i=0;i<mesasALiberar.size();i++) {
+							unaMesa = mesasALiberar.get(i);
+							unaMesa.setCapacidad(4);
+							unaMesa.setEstado("Libre");
+							mesaDao.modificarMesa(unaMesa);
+						}
 					}
-					unMozo=unaReserva.getMozoAtendiendo();
-					unMozo=mozoDao.obtenerMozo(unMozo.getId());
-					System.out.println(unaReserva);
-					System.out.println(unMozo);
-					System.out.println(unMozo.getReservasAtendidas());
 					
+					unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getId());
 					for(int i=0;i<unMozo.getReservasAtendidas().size();i++){
 						if(unMozo.getReservasAtendidas().get(i).getId()==unaReserva.getId()){
 							unMozo.getReservasAtendidas().remove(i);
 						}
 					}
 					mozoDao.modificarMozo(unMozo);
+					
 					reservaDao.borrarReserva(unaReserva);
 					System.out.println("Reserva borrada correctamente!");
 				}
