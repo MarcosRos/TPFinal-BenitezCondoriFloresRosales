@@ -1,15 +1,11 @@
 package ar.edu.unju.escmi.poo.principal;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 import javax.persistence.NoResultException;
-
-import org.hibernate.internal.build.AllowSysOut;
 
 import ar.edu.unju.escmi.poo.dao.IClienteDao;
 import ar.edu.unju.escmi.poo.dao.IMesaDao;
@@ -411,19 +407,28 @@ public class Principal {
 
 						if ((asientos1 >= comensales) && (asientos2 >= comensales)) {
 							do {
-								bandera = true;
-								System.out.println("Elija en que salon desea ocupar");
-								System.out.println("1- Salon 1");
-								System.out.println("2- Salon 2");
-								try {
-									salonElegido = sc.nextInt();
-								} catch (InputMismatchException ime) {
-									bandera = false;
-									System.out.println("Formato Incorrecto");
-									sc.next();
+								do {
+									bandera = true;
+									System.out.println("Elija en que salon desea ocupar");
+									System.out.println("1- Salon 1");
+									System.out.println("2- Salon 2");
+									try {
+										salonElegido = sc.nextInt();
+									} catch (InputMismatchException ime) {
+										bandera = false;
+										System.out.println("Formato Incorrecto");
+										sc.next();
+									}
+								} while (bandera == false);
+								if (salonElegido==1 || salonElegido==2) {
+								banderaSalon = true;
 								}
-							} while (bandera == false);
-							banderaSalon = true;
+								else {
+									System.out.println("Salon ingresado inexistente");
+									banderaSalon=false;
+								}
+							}while(banderaSalon==false);
+							
 						} else if (asientos1 >= comensales) {
 							System.out.println("El unico salon disponible es el Salon 1");
 							salonElegido = 1;
@@ -439,6 +444,7 @@ public class Principal {
 
 						if (banderaSalon == true) {
 							if (salonElegido == 1) {
+								//Se eligio el salon 1
 								for (int i = 0; i < mesasRequeridas; i++) {
 									mesasS1.get(i).setEstado("Ocupado");
 									if (comensales >= 4) {
@@ -455,6 +461,7 @@ public class Principal {
 									mesaDao.modificarMesa(unaMesa);
 								}
 							} else {
+								//Se eligio el salon 2
 								mesasOcupadas = new ArrayList<Mesa>();
 								for (int i = 0; i < mesasRequeridas; i++) {
 									mesasS2.get(i).setEstado("Ocupado");
