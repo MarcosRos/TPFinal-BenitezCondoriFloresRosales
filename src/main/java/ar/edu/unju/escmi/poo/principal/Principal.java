@@ -514,6 +514,11 @@ public class Principal {
 			case 6: {
 				int opcion = 0;
 				boolean reservaEncontrada = true;
+				if (reservaDao.obtenerReservas().size()==0) {
+				System.out.println("No hay reservas en el sistema");
+				}
+				else {
+				
 				System.out.println("Reservas:");
 				reservaDao.obtenerReservas().stream().filter(s -> s.getEstado().equals("Sin Pagar"))
 						.forEach(System.out::println);
@@ -552,7 +557,7 @@ public class Principal {
 							mesaDao.modificarMesa(unaMesa);
 						}
 						
-						unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getId());
+						unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getDni());
 						for(int i=0;i<unMozo.getReservasAtendidas().size();i++){
 							if(unMozo.getReservasAtendidas().get(i).getId()==unaReserva.getId()){
 								unMozo.getReservasAtendidas().remove(i);
@@ -561,6 +566,7 @@ public class Principal {
 						mozoDao.modificarMozo(unMozo);
 					}
 				}
+			}
 			}
 				break;
 			case 7: {
@@ -600,7 +606,8 @@ public class Principal {
 				break;
 			case 8: {
 				int id = 0;
-				reservaDao.obtenerReservas().stream().forEach(System.out::println);
+				System.out.println("====== RESERVAS SIN PAGAR (CANCELABLES) =====");
+				reservaDao.obtenerReservas().stream().filter(s -> s.getEstado().equals("Sin Pagar")).forEach(System.out::println);
 				System.out.println(" ");
 				do {
 					bandera = true;
@@ -629,18 +636,19 @@ public class Principal {
 							unaMesa.setEstado("Libre");
 							mesaDao.modificarMesa(unaMesa);
 						}
-					}
-					
-					unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getId());
+						unMozo=mozoDao.obtenerMozoId(unaReserva.getMozoAtendiendo().getId());
 					for(int i=0;i<unMozo.getReservasAtendidas().size();i++){
 						if(unMozo.getReservasAtendidas().get(i).getId()==unaReserva.getId()){
 							unMozo.getReservasAtendidas().remove(i);
 						}
 					}
 					mozoDao.modificarMozo(unMozo);
-					
 					reservaDao.borrarReserva(unaReserva);
-					System.out.println("Reserva borrada correctamente!");
+					System.out.println("Reserva borrada/cancelada correctamente!");
+					}
+					else {
+						System.out.println("Ingrese un id valido de una reserva para cancelarla, no se pueden eliminar las reservas ya pagadas");
+					}	
 				}
 			}
 				break;

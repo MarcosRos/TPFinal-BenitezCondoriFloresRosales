@@ -1,9 +1,5 @@
 package ar.edu.unju.escmi.poo.test;
 
-import static org.junit.Assert.*;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 import org.junit.Test;

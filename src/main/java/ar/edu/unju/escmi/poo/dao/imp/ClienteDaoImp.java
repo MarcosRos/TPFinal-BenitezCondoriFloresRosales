@@ -18,14 +18,7 @@ public class ClienteDaoImp implements IClienteDao{
 		manager.persist(cliente);
 		manager.getTransaction().commit();
 	}
-
-	public void borrarCliente(Cliente cliente) {
-		// TODO Auto-generated method stub
-		manager.getTransaction().begin();
-		manager.remove(cliente);
-		manager.getTransaction().commit();	
-	}
-
+	
 	public List<Cliente> obtenerClientes() {
 		// TODO Auto-generated method stub
 		@SuppressWarnings("unchecked")
@@ -49,10 +42,10 @@ public class ClienteDaoImp implements IClienteDao{
 		return cliente;
 	}
 	
-	public Cliente obtenerClienteAgencia(long cuilCliente) {
+	public Cliente obtenerClienteAgencia(long cuitCliente) {
 		// TODO Auto-generated method stub
-		Query query = manager.createQuery("SELECT e FROM ClienteAgencia e " + "WHERE e.cuil = :cuilCliente");
-		query.setParameter("cuilCliente", cuilCliente);
+		Query query = manager.createQuery("SELECT e FROM ClienteAgencia e " + "WHERE e.cuit = :cuitCliente");
+		query.setParameter("cuitCliente", cuitCliente);
 		Cliente cliente = (Cliente)query.getSingleResult();
 		return cliente;
 	}
