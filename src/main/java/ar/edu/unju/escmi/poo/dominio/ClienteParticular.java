@@ -1,5 +1,7 @@
 package ar.edu.unju.escmi.poo.dominio;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 
 @Entity
@@ -17,8 +19,9 @@ public class ClienteParticular extends Cliente{
 		// TODO Auto-generated constructor stub
 	}
 
-	public ClienteParticular(String nombre, String email, long telefono, String apellido, long dni) {
-		super(nombre, email, telefono);
+	public ClienteParticular(String nombre, String email, long telefono, List<Reserva> reservasHechas,
+			String apellido, long dni) {
+		super(nombre, email, telefono, reservasHechas);
 		this.apellido = apellido;
 		this.dni = dni;
 	}

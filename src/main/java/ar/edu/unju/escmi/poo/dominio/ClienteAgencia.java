@@ -1,5 +1,7 @@
 package ar.edu.unju.escmi.poo.dominio;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 
 @Entity
@@ -15,11 +17,11 @@ public class ClienteAgencia extends Cliente {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ClienteAgencia(String nombre, String email, long telefono, long cuit) {
-		super(nombre, email, telefono);
+	public ClienteAgencia(String nombre, String email, long telefono, List<Reserva> reservasHechas, long cuit) {
+		super(nombre, email, telefono, reservasHechas);
 		this.cuit = cuit;
 	}
-	
+
 	public long getCuit() {
 		return cuit;
 	}
