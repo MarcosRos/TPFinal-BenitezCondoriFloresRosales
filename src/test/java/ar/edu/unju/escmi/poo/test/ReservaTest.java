@@ -1,5 +1,6 @@
 package ar.edu.unju.escmi.poo.test;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class ReservaTest extends TestCase{
 		Mozo unMozo=new Mozo();
 		ArrayList<Mesa> mesas=new ArrayList<Mesa>();
 		Reserva unaReserva=new Reserva(), unaReserva2=null;
-		unaReserva2=unaReserva.crearReserva(unCliente, unMozo, mesas, 1, 0);
+		unaReserva2=unaReserva.crearReserva(unCliente, unMozo, mesas, 1, 0,LocalTime.now());
 		
 		assertNotNull(unaReserva2);
 	}

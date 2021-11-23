@@ -1,6 +1,7 @@
 package ar.edu.unju.escmi.poo.dominio;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
@@ -25,18 +27,23 @@ public abstract class Cliente implements Serializable{
 	private String nombre;
 	private String email;
 	private long telefono;
+	@OneToMany
+	private List<Reserva> reservasHechas;
 	
 	public Cliente() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Cliente(String nombre, String email, long telefono) {
+	
+	
+	public Cliente(String nombre, String email, long telefono, List<Reserva> reservasHechas) {
 		super();
 		this.nombre = nombre;
 		this.email = email;
 		this.telefono = telefono;
+		this.reservasHechas = reservasHechas;
 	}
-	
+
 	@Id
     @GeneratedValue (strategy=GenerationType.TABLE , generator= "idsGenerator" )
     @TableGenerator (name= "idsGenerator" , table= "IdsGenerator" , 

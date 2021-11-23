@@ -1,5 +1,7 @@
 package ar.edu.unju.escmi.poo.principal;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -24,6 +26,7 @@ import ar.edu.unju.escmi.poo.dominio.Mesa;
 import ar.edu.unju.escmi.poo.dominio.Mozo;
 import ar.edu.unju.escmi.poo.dominio.Reserva;
 import ar.edu.unju.escmi.poo.dominio.Salon;
+import ar.edu.unju.escmi.poo.util.FechaUtil;
 
 public class Principal {
 
@@ -317,11 +320,11 @@ public class Principal {
 								case 1:
 									System.out.println("Ingrese su Apellido");
 									String apellido = sc.next();
-									unCliente = new ClienteParticular(nombre, email, telefono, apellido, dni);
+									unCliente = new ClienteParticular(nombre, email, telefono,null, apellido, dni);
 									tipoElegido = true;
 									break;
 								case 2:
-									unCliente = new ClienteAgencia(nombre, email, telefono, dni);
+									unCliente = new ClienteAgencia(nombre, email, telefono,null, dni);
 									tipoElegido = true;
 									break;
 								default:
@@ -491,9 +494,27 @@ public class Principal {
 									sc.next();
 								}
 							} while (bandera == false);
+							String horaString;
+							LocalTime hora=null;
+							do {
+								bandera = true;
+								System.out.println("Ingrese la Hora de la reserva (HH:mm)");
+								horaString = sc.next();
+								try {
+									hora=FechaUtil.convertirStringLocalTime(horaString);
+								}
+								catch(DateTimeParseException dtpe){
+									bandera=false;
+									System.out.println("Formato Incorrecto");
+								}
+							}while(bandera==false);
+							
+							
+							
+							
 							unSalon = salonDao.obtenerSalon(salonElegido);
 							
-							unaReserva=unaReserva.crearReserva(unCliente, unMozo, mesasOcupadas, salonElegido, totalAPagar);
+							unaReserva=unaReserva.crearReserva(unCliente, unMozo, mesasOcupadas, salonElegido, totalAPagar,hora);
 							reservaDao.guardarReserva(unaReserva);
 							for (int i=0; i<mesasOcupadas.size();i++)
 							{
