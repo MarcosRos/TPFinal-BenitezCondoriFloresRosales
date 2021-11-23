@@ -27,6 +27,9 @@ public class Mesa implements Serializable{
 	@ManyToOne
 	@JoinColumn (name="salon_id")
 	private Salon salon;
+	@ManyToOne
+	@JoinColumn (name="reserva_id")
+	private Reserva reservaOcupando;
 	
 	public Mesa() {
 		// TODO Auto-generated constructor stub
@@ -71,9 +74,18 @@ public class Mesa implements Serializable{
 		this.salon =salon;
 	}
 
+	public Reserva getReservaOcupando() {
+		return reservaOcupando;
+	}
+
+	public void setReservaOcupando(Reserva reservaOcupando) {
+		this.reservaOcupando = reservaOcupando;
+	}
+
 	@Override
 	public String toString() {
-		return "Mesa [id=" + id + ", estado=" + estado + ", capacidad=" + capacidad + " asientos libres de 4 totales]";
+		return "Mesa [id=" + id + ", estado=" + estado + ", capacidad=" + capacidad + ", salon=" + salon.getId()
+				+ ", reservaOcupando=" + reservaOcupando.getId() + "]";
 	}
 	
 	
