@@ -1,15 +1,11 @@
 package ar.edu.unju.escmi.poo.principal;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 import javax.persistence.NoResultException;
-
-import org.hibernate.internal.build.AllowSysOut;
 
 import ar.edu.unju.escmi.poo.dao.IClienteDao;
 import ar.edu.unju.escmi.poo.dao.IMesaDao;
@@ -411,19 +407,28 @@ public class Principal {
 
 						if ((asientos1 >= comensales) && (asientos2 >= comensales)) {
 							do {
-								bandera = true;
-								System.out.println("Elija en que salon desea ocupar");
-								System.out.println("1- Salon 1");
-								System.out.println("2- Salon 2");
-								try {
-									salonElegido = sc.nextInt();
-								} catch (InputMismatchException ime) {
-									bandera = false;
-									System.out.println("Formato Incorrecto");
-									sc.next();
+								do {
+									bandera = true;
+									System.out.println("Elija en que salon desea ocupar");
+									System.out.println("1- Salon 1");
+									System.out.println("2- Salon 2");
+									try {
+										salonElegido = sc.nextInt();
+									} catch (InputMismatchException ime) {
+										bandera = false;
+										System.out.println("Formato Incorrecto");
+										sc.next();
+									}
+								} while (bandera == false);
+								if (salonElegido==1 || salonElegido==2) {
+								banderaSalon = true;
 								}
-							} while (bandera == false);
-							banderaSalon = true;
+								else {
+									System.out.println("Salon ingresado inexistente");
+									banderaSalon=false;
+								}
+							}while(banderaSalon==false);
+							
 						} else if (asientos1 >= comensales) {
 							System.out.println("El unico salon disponible es el Salon 1");
 							salonElegido = 1;
@@ -439,6 +444,7 @@ public class Principal {
 
 						if (banderaSalon == true) {
 							if (salonElegido == 1) {
+								//Se eligio el salon 1
 								for (int i = 0; i < mesasRequeridas; i++) {
 									mesasS1.get(i).setEstado("Ocupado");
 									if (comensales >= 4) {
@@ -455,6 +461,7 @@ public class Principal {
 									mesaDao.modificarMesa(unaMesa);
 								}
 							} else {
+								//Se eligio el salon 2
 								mesasOcupadas = new ArrayList<Mesa>();
 								for (int i = 0; i < mesasRequeridas; i++) {
 									mesasS2.get(i).setEstado("Ocupado");
@@ -507,6 +514,11 @@ public class Principal {
 			case 6: {
 				int opcion = 0;
 				boolean reservaEncontrada = true;
+				if (reservaDao.obtenerReservas().size()==0) {
+				System.out.println("No hay reservas en el sistema");
+				}
+				else {
+				
 				System.out.println("Reservas:");
 				reservaDao.obtenerReservas().stream().filter(s -> s.getEstado().equals("Sin Pagar"))
 						.forEach(System.out::println);
@@ -545,7 +557,7 @@ public class Principal {
 							mesaDao.modificarMesa(unaMesa);
 						}
 						
-						unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getId());
+						unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getDni());
 						for(int i=0;i<unMozo.getReservasAtendidas().size();i++){
 							if(unMozo.getReservasAtendidas().get(i).getId()==unaReserva.getId()){
 								unMozo.getReservasAtendidas().remove(i);
@@ -554,6 +566,7 @@ public class Principal {
 						mozoDao.modificarMozo(unMozo);
 					}
 				}
+			}
 			}
 				break;
 			case 7: {
@@ -593,7 +606,8 @@ public class Principal {
 				break;
 			case 8: {
 				int id = 0;
-				reservaDao.obtenerReservas().stream().forEach(System.out::println);
+				System.out.println("====== RESERVAS SIN PAGAR (CANCELABLES) =====");
+				reservaDao.obtenerReservas().stream().filter(s -> s.getEstado().equals("Sin Pagar")).forEach(System.out::println);
 				System.out.println(" ");
 				do {
 					bandera = true;
@@ -622,18 +636,19 @@ public class Principal {
 							unaMesa.setEstado("Libre");
 							mesaDao.modificarMesa(unaMesa);
 						}
-					}
-					
-					unMozo=mozoDao.obtenerMozo(unaReserva.getMozoAtendiendo().getId());
+						unMozo=mozoDao.obtenerMozoId(unaReserva.getMozoAtendiendo().getId());
 					for(int i=0;i<unMozo.getReservasAtendidas().size();i++){
 						if(unMozo.getReservasAtendidas().get(i).getId()==unaReserva.getId()){
 							unMozo.getReservasAtendidas().remove(i);
 						}
 					}
 					mozoDao.modificarMozo(unMozo);
-					
 					reservaDao.borrarReserva(unaReserva);
-					System.out.println("Reserva borrada correctamente!");
+					System.out.println("Reserva borrada/cancelada correctamente!");
+					}
+					else {
+						System.out.println("Ingrese un id valido de una reserva para cancelarla, no se pueden eliminar las reservas ya pagadas");
+					}	
 				}
 			}
 				break;

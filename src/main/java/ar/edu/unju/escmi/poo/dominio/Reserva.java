@@ -23,6 +23,7 @@ public class Reserva implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id",unique=true, nullable=false)
 	private int id;
+	@Column (length = 9999999)
 	private Cliente clienteReserva;
 	@Column (length = 9999999)
 	private Mozo mozoAtendiendo;
