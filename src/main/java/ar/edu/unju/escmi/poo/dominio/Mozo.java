@@ -1,13 +1,14 @@
 package ar.edu.unju.escmi.poo.dominio;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -27,14 +28,15 @@ public class Mozo implements Serializable{
 	private String apellido;
 	@Column(name="dni")
 	private long dni;
-	@Column(name="reserva" , length = 9999999)
-	private ArrayList <Reserva> reservasAtendidas; 
+	@Column(length = 9999999)
+	@OneToMany
+	private List <Reserva> reservasAtendidas; 
 	
 	public Mozo() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Mozo(String nombre, String apellido, long dni, ArrayList<Reserva> reservasAtendidas) {
+	public Mozo(String nombre, String apellido, long dni, List<Reserva> reservasAtendidas) {
 		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -42,7 +44,7 @@ public class Mozo implements Serializable{
 		this.reservasAtendidas = reservasAtendidas;
 	}
 	
-	public Mozo asignarReservas(Mozo unMozo,ArrayList<Reserva>reservasAAtender) {
+	public Mozo asignarReservas(Mozo unMozo,List<Reserva>reservasAAtender) {
 		unMozo.setReservasAtendidas(reservasAAtender);
 		return unMozo;
 	}
@@ -79,11 +81,11 @@ public class Mozo implements Serializable{
 		this.dni = dni;
 	}
 
-	public ArrayList<Reserva> getReservasAtendidas() {
+	public List<Reserva> getReservasAtendidas() {
 		return reservasAtendidas;
 	}
 
-	public void setReservasAtendidas(ArrayList<Reserva> reservasAtendidas) {
+	public void setReservasAtendidas(List<Reserva> reservasAtendidas) {
 		this.reservasAtendidas = reservasAtendidas;
 	}
 

@@ -3,13 +3,16 @@ package ar.edu.unju.escmi.poo.dominio;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -23,12 +26,16 @@ public class Reserva implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id",unique=true, nullable=false)
 	private int id;
-	@Column (length = 9999999)
+	@ManyToOne
+	@JoinColumn (name="cliente_id")
 	private Cliente clienteReserva;
-	@Column (length = 9999999)
+	@ManyToOne
+	@JoinColumn (name="mozo_id")
 	private Mozo mozoAtendiendo;
 	@Column (length = 9999999)
-	private ArrayList<Mesa> mesasOcupadas;
+	@OneToMany
+	private List<Mesa> mesasOcupadas;
+	
 	private int idSalonUsado;
 	private LocalDate fecha;
 	private LocalTime hora;
@@ -39,7 +46,7 @@ public class Reserva implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Reserva(Cliente clienteReserva, Mozo mozoAtendiendo, ArrayList<Mesa> mesasOcupadas, int idSalonUsado,
+	public Reserva(Cliente clienteReserva, Mozo mozoAtendiendo, List<Mesa> mesasOcupadas, int idSalonUsado,
 			LocalDate fecha, LocalTime hora, double totalAPagar, String estado) {
 		super();
 		this.clienteReserva = clienteReserva;
@@ -52,7 +59,7 @@ public class Reserva implements Serializable{
 		this.estado = estado;
 	}
 	
-	public Reserva crearReserva(Cliente unCliente, Mozo unMozo,ArrayList<Mesa>mesasOcupadas, int salonElegido, double totalAPagar) {
+	public Reserva crearReserva(Cliente unCliente, Mozo unMozo,List<Mesa>mesasOcupadas, int salonElegido, double totalAPagar) {
 		Reserva reservaCreada=new Reserva(unCliente, unMozo, mesasOcupadas, salonElegido, LocalDate.now(),
 				LocalTime.now(), totalAPagar, "Sin Pagar");
 		return reservaCreada;
@@ -82,11 +89,11 @@ public class Reserva implements Serializable{
 		this.mozoAtendiendo = mozoAtendiendo;
 	}
 
-	public ArrayList<Mesa> getMesasOcupadas() {
+	public List<Mesa> getMesasOcupadas() {
 		return mesasOcupadas;
 	}
 
-	public void setMesasOcupadas(ArrayList<Mesa> mesasOcupadas) {
+	public void setMesasOcupadas(List<Mesa> mesasOcupadas) {
 		this.mesasOcupadas = mesasOcupadas;
 	}
 
@@ -130,9 +137,13 @@ public class Reserva implements Serializable{
 		this.estado = estado;
 	}
 
+	public void setIdSalonUsado(int idSalonUsado) {
+		this.idSalonUsado = idSalonUsado;
+	}
+
 	@Override
 	public String toString() {
-		return "Reserva [id=" + id + ", clienteReserva=" + clienteReserva + ", IdDelMozoAtendiendo=" + mozoAtendiendo.getId()
+		return "Reserva [id=" + id + ", clienteReserva=" + clienteReserva + ", mozoAtendiendo=" + mozoAtendiendo.getId()
 				+ ", mesasOcupadas=" + mesasOcupadas + ", idSalonUsado=" + idSalonUsado + ", fecha=" + fecha + ", hora="
 				+ hora + ", totalAPagar=" + totalAPagar + ", estado=" + estado + "]";
 	}

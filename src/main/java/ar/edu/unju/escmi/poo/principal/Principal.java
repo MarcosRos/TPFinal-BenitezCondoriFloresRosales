@@ -495,6 +495,15 @@ public class Principal {
 							
 							unaReserva=unaReserva.crearReserva(unCliente, unMozo, mesasOcupadas, salonElegido, totalAPagar);
 							reservaDao.guardarReserva(unaReserva);
+							for (int i=0; i<mesasOcupadas.size();i++)
+							{
+								unaMesa = mesasOcupadas.get(i);
+								unaMesa.setReservaOcupando(unaReserva);
+								mesaDao.modificarMesa(unaMesa);
+							}
+							
+							unaReserva.setMesasOcupadas(mesasOcupadas);					
+							reservaDao.modificarReserva(unaReserva);
 
 							if (unMozo.getReservasAtendidas() != null) {
 								unMozo.getReservasAtendidas().add(unaReserva);
@@ -554,6 +563,7 @@ public class Principal {
 							unaMesa = mesasALiberar.get(i);
 							unaMesa.setCapacidad(4);
 							unaMesa.setEstado("Libre");
+							unaMesa.setReservaOcupando(null);
 							mesaDao.modificarMesa(unaMesa);
 						}
 						
@@ -634,6 +644,7 @@ public class Principal {
 							unaMesa = mesasALiberar.get(i);
 							unaMesa.setCapacidad(4);
 							unaMesa.setEstado("Libre");
+							unaMesa.setReservaOcupando(null);
 							mesaDao.modificarMesa(unaMesa);
 						}
 						unMozo=mozoDao.obtenerMozoId(unaReserva.getMozoAtendiendo().getId());
